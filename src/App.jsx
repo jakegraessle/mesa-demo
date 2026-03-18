@@ -32,6 +32,7 @@ const pieces = [
     name: "Coupe Dinner Bowl",
     glaze: "Moongate",
     glazeColor: "#c2b5a5",
+    image: "/images/coupe-dinner-bowl.jpg",
     price: 48,
     poem: "A bowl for gathering. The Moongate glaze was born here, in this room.",
     story: "Hand-thrown in Sausalito by a team of forty. The Moongate glaze was created for this collaboration alone — inspired by the light that falls through Mister Jiu's windows at dusk. Each piece carries a Yin Yang stamp beneath, invisible until you hold it.",
@@ -42,6 +43,7 @@ const pieces = [
     name: "Small Modern Cup",
     glaze: "Pea Shoot",
     glazeColor: "#7e8e65",
+    image: "/images/small-modern-cup.jpg",
     price: 32,
     poem: "For tea. For broth. For the quiet moment between courses.",
     story: "The Pea Shoot glaze takes its name from the greens of Chinatown — the color of morning produce stacked on Stockton Street. A cup designed to be cradled, not gripped.",
@@ -52,6 +54,7 @@ const pieces = [
     name: "Covered Serving Dish",
     glaze: "Cedar",
     glazeColor: "#6e5038",
+    image: "/images/covered-serving-dish.jpg",
     price: 120,
     poem: "Cedar. Brought back from the archive. A color the earth remembers.",
     story: "This glaze was retired years ago. Brandon asked Heath to bring it back for this collection. The covered dish is meant for family-style dining — for the act of lifting a lid and revealing what's inside.",
@@ -62,6 +65,7 @@ const pieces = [
     name: "Coupe Serving Platter",
     glaze: "Levain",
     glazeColor: "#d1c5af",
+    image: "/images/coupe-serving-platter.jpg",
     price: 85,
     poem: "The stage for the duck. This is the platter.",
     story: "If you ordered the Peking-style roast duck tonight, it arrived on this platter. The Levain glaze is warm and creamy — designed to disappear beneath the food, then reappear when the plate is clean.",
@@ -72,6 +76,7 @@ const pieces = [
     name: "Coupe Dinner Plate",
     glaze: "Sunflower Gloss",
     glazeColor: "#bfa04a",
+    image: "/images/coupe-dinner-plate.jpg",
     price: 42,
     poem: "Golden. Like late afternoon in the Outer Sunset.",
     story: "Heath's Coupe line has been in continuous production since 1948. The Sunflower Gloss is one of the glazes you'll find on the table at Mister Jiu's every night — a classic, not a limited edition.",
@@ -82,6 +87,7 @@ const pieces = [
     name: "Rim Salad Plate",
     glaze: "Sand",
     glazeColor: "#b5a68e",
+    image: "/images/rim-salad-plate.jpg",
     price: 36,
     poem: "Sand. The color of Baker Beach at low tide.",
     story: "The Rim line is defined by its raised edge — a subtle frame for whatever is placed upon it. The Sand glaze is neutral in the best sense: it holds space without competing.",
@@ -304,17 +310,13 @@ function PieceThumb({ piece, onSelect, large = false }) {
         transition: "transform 900ms cubic-bezier(0.25, 0.1, 0.25, 1)",
         transform: hover ? "scale(1.015)" : "scale(1)",
       }}>
-        {/* The ceramic — a circle that suggests the object */}
-        <div style={{
-          width: large ? "32%" : "48%",
-          aspectRatio: "1",
-          borderRadius: "50%",
-          background: `radial-gradient(ellipse at 40% 35%, ${piece.glazeColor}ff, ${piece.glazeColor}bb ${large ? "70%" : "65%"}, ${piece.glazeColor}88)`,
-          boxShadow: `
-            inset 0 6px 20px rgba(255,255,255,0.12),
-            inset 0 -8px 20px rgba(0,0,0,0.05),
-            0 1px 4px rgba(0,0,0,0.04)
-          `,
+        <img src={piece.image} alt={piece.name} style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          position: "absolute",
+          top: 0,
+          left: 0,
         }} />
       </div>
 
@@ -384,14 +386,13 @@ function Detail({ piece, bag, onBack, onAdd, onBag }) {
           background: `linear-gradient(170deg, ${piece.glazeColor}18 0%, ${piece.glazeColor}50 35%, ${piece.glazeColor}78 100%)`,
           display: "flex", alignItems: "center", justifyContent: "center",
         }}>
-          <div style={{
-            width: "50%", aspectRatio: "1", borderRadius: "50%",
-            background: `radial-gradient(ellipse at 38% 35%, ${piece.glazeColor}ff, ${piece.glazeColor}cc 60%, ${piece.glazeColor}99)`,
-            boxShadow: `
-              inset 0 8px 28px rgba(255,255,255,0.12),
-              inset 0 -10px 28px rgba(0,0,0,0.06),
-              0 2px 8px rgba(0,0,0,0.04)
-            `,
+          <img src={piece.image} alt={piece.name} style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            position: "absolute",
+            top: 0,
+            left: 0,
           }} />
         </div>
       </Fade>
