@@ -317,6 +317,7 @@ function PieceThumb({ piece, onSelect, large = false }) {
           width: "100%",
           height: "100%",
           objectFit: "cover",
+          objectPosition: "bottom",
         }} />
       </div>
 
@@ -393,6 +394,7 @@ function Detail({ piece, bag, onBack, onAdd, onBag }) {
             width: "100%",
             height: "100%",
             objectFit: "cover",
+            objectPosition: "bottom",
           }} />
         </div>
       </Fade>
