@@ -306,11 +306,14 @@ function PieceThumb({ piece, onSelect, large = false }) {
         width: "100%",
         aspectRatio: large ? "16 / 10" : "1 / 1",
         background: `linear-gradient(155deg, ${piece.glazeColor}20 0%, ${piece.glazeColor}55 40%, ${piece.glazeColor}80 100%)`,
-        display: "flex", alignItems: "center", justifyContent: "center",
+        position: "relative",
         transition: "transform 900ms cubic-bezier(0.25, 0.1, 0.25, 1)",
         transform: hover ? "scale(1.015)" : "scale(1)",
       }}>
         <img src={piece.image} alt={piece.name} style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
           width: "100%",
           height: "100%",
           objectFit: "cover",
@@ -381,9 +384,12 @@ function Detail({ piece, bag, onBack, onAdd, onBag }) {
         <div style={{
           width: "100%", aspectRatio: "4 / 3",
           background: `linear-gradient(170deg, ${piece.glazeColor}18 0%, ${piece.glazeColor}50 35%, ${piece.glazeColor}78 100%)`,
-          display: "flex", alignItems: "center", justifyContent: "center",
+          position: "relative",
         }}>
           <img src={piece.image} alt={piece.name} style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
             width: "100%",
             height: "100%",
             objectFit: "cover",
