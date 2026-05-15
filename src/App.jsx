@@ -15,6 +15,9 @@ const palette = {
 const serif = "'EB Garamond', 'Playfair Display', 'Georgia', serif";
 const sans = "'Helvetica Neue', 'Helvetica', sans-serif";
 
+// Gradient border that fades: light blue at top → transparent ~70% down
+const tileBorder = `linear-gradient(${palette.ceramic}, ${palette.ceramic}) padding-box, linear-gradient(to bottom, rgba(176, 214, 230, 0.65), transparent 70%) border-box`;
+
 const pieces = [
   {
     id: 1,
@@ -84,7 +87,7 @@ const pieces = [
   },
 ];
 
-function Fade({ children, delay = 0, duration = 800 }) {
+function Fade({ children, delay = 0, duration = 700 }) {
   const [v, setV] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setV(true), delay);
@@ -93,7 +96,7 @@ function Fade({ children, delay = 0, duration = 800 }) {
   return (
     <div style={{
       opacity: v ? 1 : 0,
-      transform: v ? "translateY(0)" : "translateY(10px)",
+      transform: v ? "translateY(0)" : "translateY(8px)",
       transition: `opacity ${duration}ms ease, transform ${duration}ms ease`,
     }}>
       {children}
@@ -159,36 +162,6 @@ export default function App() {
   );
 }
 
-// ─── NAV — shared, always mesa + Bag only ──────────────────────
-
-function Nav({ onBag, bagCount, onBack, label }) {
-  return (
-    <div style={{
-      padding: "18px 28px",
-      display: "flex", justifyContent: "space-between", alignItems: "center",
-      borderBottom: `0.5px solid ${palette.ceramicDark}`,
-    }}>
-      {onBack ? (
-        <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: sans, fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: palette.fog }}>
-          ← {label || "Back"}
-        </button>
-      ) : (
-        <span style={{ fontFamily: serif, fontSize: 14, color: palette.ink, letterSpacing: "0.08em" }}>mesa</span>
-      )}
-
-      {!onBack && <span style={{ fontFamily: serif, fontSize: 14, color: palette.ink, letterSpacing: "0.08em", position: "absolute", left: "50%", transform: "translateX(-50%)" }}>mesa</span>}
-
-      <button onClick={onBag} style={{
-        background: "none", border: "none", cursor: "pointer", padding: 0,
-        fontFamily: sans, fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase",
-        color: bagCount > 0 ? palette.ink : palette.fog,
-      }}>
-        Bag{bagCount > 0 ? ` · ${bagCount}` : ""}
-      </button>
-    </div>
-  );
-}
-
 // ─── GALLERY ───────────────────────────────────────────────────
 
 function Gallery({ pieces, bag, onSelect, onBag }) {
@@ -197,84 +170,69 @@ function Gallery({ pieces, bag, onSelect, onBag }) {
   return (
     <div style={{ minHeight: "100vh", background: palette.ceramic }}>
 
-      <Nav onBag={onBag} bagCount={bagCount} />
+      {/* Nav — mesa + Bag only */}
+      <div style={{
+        padding: "16px 20px",
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        borderBottom: `0.5px solid ${palette.ceramicDark}`,
+      }}>
+        <span style={{ fontFamily: serif, fontSize: 14, color: palette.text, letterSpacing: "0.08em" }}>mesa</span>
+        <button onClick={onBag} style={{
+          background: "none", border: "none", cursor: "pointer", padding: 0,
+          fontFamily: sans, fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase",
+          color: bagCount > 0 ? palette.text : "transparent",
+          minWidth: 40, textAlign: "right",
+        }}>
+          {bagCount > 0 ? `Bag · ${bagCount}` : "·"}
+        </button>
+      </div>
 
-      {/* Hero header — restaurant name lives here, not in nav */}
-      <Fade delay={80} duration={900}>
-        <div style={{ textAlign: "center", padding: "64px 28px 56px" }}>
-          <p style={{
-            fontFamily: sans, fontSize: 9, letterSpacing: "0.32em",
-            textTransform: "uppercase", color: palette.celadonMute, margin: "0 0 16px",
-          }}>
+      {/* Header */}
+      <Fade delay={60} duration={700}>
+        <div style={{ textAlign: "center", padding: "28px 24px 24px", borderBottom: `0.5px solid ${palette.ceramicDark}` }}>
+          <p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", color: palette.celadonMute, margin: "0 0 10px" }}>
             On Your Table at
           </p>
-          <h1 style={{
-            fontFamily: serif, fontSize: 46, fontWeight: 400,
-            color: palette.ink, margin: "0 0 8px", letterSpacing: "0.01em",
-            lineHeight: 1.1,
-          }}>
+          <h1 style={{ fontFamily: serif, fontSize: 36, fontWeight: 400, color: palette.ink, margin: "0 0 5px", letterSpacing: "0.01em" }}>
             Mister Jiu's
           </h1>
-          <p style={{ fontFamily: sans, fontSize: 10, color: palette.fog, letterSpacing: "0.1em", margin: "0 0 24px" }}>
+          <p style={{ fontFamily: sans, fontSize: 10, fontWeight: 300, color: palette.fog, letterSpacing: "0.08em", margin: 0 }}>
             Chinatown · San Francisco
-          </p>
-          <div style={{ width: 20, borderBottom: `0.5px solid ${palette.ceramicDark}`, margin: "0 auto 24px" }} />
-          <p style={{
-            fontFamily: serif, fontSize: 15, fontStyle: "italic",
-            color: palette.textQuiet, lineHeight: 1.8, maxWidth: 300, margin: "0 auto",
-          }}>
-            Hand-thrown in Sausalito. Glazed in the colors of the fog.
           </p>
         </div>
       </Fade>
 
-      {/* Editorial grid — hero / pair / hero / pair */}
-      <Fade delay={240} duration={900}>
-        <div style={{ padding: "0 28px" }}>
-
-          {/* Hero — Bowl */}
-          <PieceThumb piece={pieces[0]} onSelect={onSelect} large />
-
-          {/* Pair — Cup + Serving Dish */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, marginTop: 48 }}>
-            <PieceThumb piece={pieces[1]} onSelect={onSelect} />
-            <PieceThumb piece={pieces[2]} onSelect={onSelect} />
-          </div>
-
-          {/* Hero — Platter */}
-          <div style={{ marginTop: 64 }}>
-            <PieceThumb piece={pieces[3]} onSelect={onSelect} large />
-          </div>
-
-          {/* Pair — Dinner Plate + Salad Plate */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, marginTop: 48 }}>
-            <PieceThumb piece={pieces[4]} onSelect={onSelect} />
-            <PieceThumb piece={pieces[5]} onSelect={onSelect} />
-          </div>
-
+      {/* 2×3 grid — bordered tiles, cream background, multiply blend */}
+      <Fade delay={160} duration={800}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 16,
+          padding: "20px 16px",
+        }}>
+          {pieces.map(piece => (
+            <ProductTile key={piece.id} piece={piece} onSelect={onSelect} />
+          ))}
         </div>
       </Fade>
 
       {/* Quote */}
-      <Fade delay={400} duration={800}>
-        <div style={{ padding: "80px 28px 32px", textAlign: "center" }}>
-          <div style={{ width: 20, borderBottom: `0.5px solid ${palette.imperial}`, margin: "0 auto 36px" }} />
-          <p style={{
-            fontFamily: serif, fontSize: 18, fontStyle: "italic",
-            color: palette.ink, lineHeight: 1.85, maxWidth: 360, margin: "0 auto",
-          }}>
+      <Fade delay={320} duration={700}>
+        <div style={{ padding: "44px 32px 20px", textAlign: "center", borderTop: `0.5px solid ${palette.ceramicDark}` }}>
+          <div style={{ width: 20, borderBottom: `0.5px solid ${palette.imperial}`, margin: "0 auto 28px" }} />
+          <p style={{ fontFamily: serif, fontSize: 17, fontWeight: 400, fontStyle: "italic", color: palette.ink, lineHeight: 1.85, maxWidth: 340, margin: "0 auto" }}>
             "Color, texture, and shape — it all comes together to make a dish feel complete."
           </p>
-          <p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: palette.imperial, marginTop: 20 }}>
+          <p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: palette.imperial, marginTop: 16 }}>
             Brandon Jew · Chef & Owner
           </p>
         </div>
       </Fade>
 
       {/* Footer */}
-      <div style={{ padding: "36px 28px 52px", textAlign: "center", borderTop: `0.5px solid ${palette.ceramicDark}`, marginTop: 36 }}>
+      <div style={{ padding: "24px 24px 40px", textAlign: "center", borderTop: `0.5px solid ${palette.ceramicDark}`, marginTop: 16 }}>
         <span style={{ fontFamily: serif, fontSize: 12, color: palette.fog, letterSpacing: "0.07em" }}>mesa</span>
-        <p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.1em", color: palette.fog, margin: "8px 0 0" }}>
+        <p style={{ fontFamily: sans, fontSize: 9, fontWeight: 300, letterSpacing: "0.1em", color: palette.fog, margin: "6px 0 0" }}>
           Mister Jiu's earns a share of every purchase
         </p>
       </div>
@@ -283,11 +241,11 @@ function Gallery({ pieces, bag, onSelect, onBag }) {
   );
 }
 
-// ─── PIECE THUMBNAIL ───────────────────────────────────────────
-// Products sit directly on the cream page — no frames, no boxes.
-// mix-blend-mode: multiply drops out the white photo backgrounds.
+// ─── PRODUCT TILE ──────────────────────────────────────────────
+// Gradient border: light blue at top, fades to invisible ~70% down.
+// mix-blend-mode: multiply drops white photo backgrounds into cream.
 
-function PieceThumb({ piece, onSelect, large = false }) {
+function ProductTile({ piece, onSelect }) {
   const [hover, setHover] = useState(false);
 
   return (
@@ -297,48 +255,46 @@ function PieceThumb({ piece, onSelect, large = false }) {
       onMouseLeave={() => setHover(false)}
       style={{ cursor: "pointer" }}
     >
-      {/* Image — no background container, multiply erases white */}
+      {/* Image block — gradient border, no fill */}
       <div style={{
-        width: "100%",
-        aspectRatio: large ? "16 / 10" : "4 / 5",
         position: "relative",
         overflow: "hidden",
+        background: tileBorder,
+        border: "1px solid transparent",
+        transition: "opacity 400ms ease",
+        opacity: hover ? 0.92 : 1,
       }}>
-        <img
-          src={piece.image}
-          alt={piece.name}
-          style={{
-            position: "absolute",
-            top: 0, left: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
-            mixBlendMode: "multiply",
-            transition: "transform 1400ms cubic-bezier(0.16, 1, 0.3, 1), opacity 600ms ease",
-            transform: hover ? "scale(1.03)" : "scale(1)",
-            opacity: hover ? 0.85 : 1,
-          }}
-        />
+        <div style={{
+          width: "100%",
+          aspectRatio: "1 / 1",
+          position: "relative",
+          transition: "transform 1200ms cubic-bezier(0.16, 1, 0.3, 1)",
+          transform: hover ? "scale(1.04)" : "scale(1)",
+        }}>
+          <img
+            src={piece.image}
+            alt={piece.name}
+            style={{
+              position: "absolute",
+              top: "9%", left: "9%",
+              width: "82%", height: "82%",
+              objectFit: "contain",
+              mixBlendMode: "multiply",
+            }}
+          />
+        </div>
       </div>
 
-      {/* Typography — name serif, then glaze · price in one quiet line */}
-      <div style={{ paddingTop: large ? 18 : 14, paddingBottom: large ? 0 : 0 }}>
-        <h3 style={{
-          fontFamily: serif,
-          fontSize: large ? 17 : 14,
-          fontWeight: 400,
-          color: palette.ink,
-          margin: "0 0 6px",
-          letterSpacing: "0.01em",
-        }}>
+      {/* Info strip */}
+      <div style={{ padding: "10px 2px 4px" }}>
+        <h3 style={{ fontFamily: serif, fontSize: 13, fontWeight: 400, color: palette.ink, margin: "0 0 4px", letterSpacing: "0.01em" }}>
           {piece.name}
         </h3>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontFamily: sans, fontSize: 9, color: palette.fog, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ fontFamily: sans, fontSize: 8, color: palette.fog, letterSpacing: "0.14em", textTransform: "uppercase" }}>
             {piece.glaze}
           </span>
-          <span style={{ fontFamily: sans, fontSize: 9, color: palette.ceramicDark }}>·</span>
-          <span style={{ fontFamily: sans, fontSize: 13, fontWeight: 300, color: palette.textQuiet }}>
+          <span style={{ fontFamily: sans, fontSize: 12, fontWeight: 300, color: palette.ink }}>
             ${piece.price}
           </span>
         </div>
@@ -362,70 +318,86 @@ function Detail({ piece, bag, onBack, onAdd, onBag }) {
   return (
     <div style={{ minHeight: "100vh", background: palette.ceramic }}>
 
-      <Nav onBag={onBag} bagCount={bagCount} onBack={onBack} label="Back" />
+      {/* Nav */}
+      <div style={{
+        padding: "16px 20px",
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        borderBottom: `0.5px solid ${palette.ceramicDark}`,
+      }}>
+        <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: sans, fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: palette.fog }}>
+          ← Back
+        </button>
+        <span style={{ fontFamily: serif, fontSize: 14, color: palette.text, letterSpacing: "0.08em" }}>mesa</span>
+        <button onClick={onBag} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: sans, fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: bagCount > 0 ? palette.text : "transparent", minWidth: 40, textAlign: "right" }}>
+          {bagCount > 0 ? `Bag · ${bagCount}` : "·"}
+        </button>
+      </div>
 
-      {/* Hero image — product floats on cream */}
-      <Fade delay={60} duration={700}>
-        <div style={{ padding: "0 28px", marginTop: 40 }}>
-          <div style={{ width: "100%", aspectRatio: "4 / 3", position: "relative" }}>
-            <img
-              src={piece.image}
-              alt={piece.name}
-              style={{
-                position: "absolute",
-                top: 0, left: 0,
-                width: "100%", height: "100%",
-                objectFit: "contain",
-                mixBlendMode: "multiply",
-              }}
-            />
+      {/* Hero — bordered, cream bg, multiply */}
+      <Fade delay={60} duration={600}>
+        <div style={{ padding: "20px 16px 0" }}>
+          <div style={{
+            position: "relative",
+            overflow: "hidden",
+            background: tileBorder,
+            border: "1px solid transparent",
+          }}>
+            <div style={{ width: "100%", aspectRatio: "4 / 3", position: "relative" }}>
+              <img
+                src={piece.image}
+                alt={piece.name}
+                style={{
+                  position: "absolute",
+                  top: "7%", left: "7%",
+                  width: "86%", height: "86%",
+                  objectFit: "contain",
+                  mixBlendMode: "multiply",
+                }}
+              />
+            </div>
           </div>
         </div>
       </Fade>
 
-      <div style={{ maxWidth: 520, margin: "0 auto", padding: "0 28px" }}>
+      <div style={{ maxWidth: 520, margin: "0 auto" }}>
 
-        {/* Identity */}
-        <Fade delay={200} duration={700}>
-          <div style={{ paddingTop: 32, textAlign: "center" }}>
-            <p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", color: palette.celadonMute, margin: "0 0 10px" }}>
+        <Fade delay={180} duration={600}>
+          <div style={{ padding: "26px 28px 0", textAlign: "center" }}>
+            <p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", color: palette.celadonMute, margin: "0 0 8px" }}>
               {piece.glaze} · Heath Ceramics
             </p>
-            <h2 style={{ fontFamily: serif, fontSize: 30, fontWeight: 400, color: palette.ink, margin: "0 0 18px", letterSpacing: "0.01em" }}>
+            <h2 style={{ fontFamily: serif, fontSize: 28, fontWeight: 400, color: palette.ink, margin: "0 0 16px", letterSpacing: "0.01em" }}>
               {piece.name}
             </h2>
-            <p style={{ fontFamily: serif, fontSize: 17, fontStyle: "italic", color: palette.textQuiet, lineHeight: 1.8, margin: 0 }}>
+            <p style={{ fontFamily: serif, fontSize: 16, fontWeight: 400, fontStyle: "italic", color: palette.textQuiet, lineHeight: 1.8, margin: 0 }}>
               {piece.poem}
             </p>
           </div>
         </Fade>
 
-        {/* Price */}
-        <Fade delay={320} duration={700}>
-          <div style={{ paddingTop: 20, textAlign: "center" }}>
+        <Fade delay={280} duration={600}>
+          <div style={{ padding: "18px 28px 0", textAlign: "center" }}>
             <p style={{ fontFamily: serif, fontSize: 22, fontWeight: 400, color: palette.ink, margin: 0 }}>
               ${piece.price}
             </p>
           </div>
         </Fade>
 
-        {/* Story */}
-        <Fade delay={440} duration={700}>
-          <div style={{ paddingTop: 28 }}>
-            <div style={{ width: 16, borderBottom: `0.5px solid ${palette.ceramicDark}`, margin: "0 auto 22px" }} />
+        <Fade delay={380} duration={600}>
+          <div style={{ padding: "20px 28px 0" }}>
+            <div style={{ width: 16, borderBottom: `0.5px solid ${palette.ceramicDark}`, margin: "0 auto 18px" }} />
             <p style={{ fontFamily: serif, fontSize: 15, color: palette.textQuiet, lineHeight: 1.9, textAlign: "center", margin: 0 }}>
               {piece.story}
             </p>
           </div>
         </Fade>
 
-        {/* CTA */}
-        <Fade delay={560} duration={700}>
-          <div style={{ paddingTop: 36 }}>
+        <Fade delay={480} duration={600}>
+          <div style={{ padding: "28px 28px 0" }}>
             <button onClick={handleAdd} style={{
               display: "block", width: "100%",
               background: added ? palette.celadonMute : palette.ink,
-              color: palette.warmWhite, border: "none", padding: "19px 0",
+              color: palette.warmWhite, border: "none", padding: "18px 0",
               fontFamily: sans, fontSize: 10, letterSpacing: "0.24em", textTransform: "uppercase",
               cursor: "pointer", borderRadius: 0, transition: "background 600ms ease",
             }}>
@@ -434,9 +406,8 @@ function Detail({ piece, bag, onBack, onAdd, onBag }) {
           </div>
         </Fade>
 
-        {/* Fulfillment */}
-        <Fade delay={660} duration={700}>
-          <div style={{ paddingTop: 16, paddingBottom: 64, textAlign: "center" }}>
+        <Fade delay={560} duration={600}>
+          <div style={{ padding: "14px 28px 52px", textAlign: "center" }}>
             <p style={{ fontFamily: serif, fontSize: 13, fontStyle: "italic", color: palette.fog, lineHeight: 1.75, margin: 0 }}>
               {piece.fulfillment}
             </p>
@@ -451,31 +422,30 @@ function Detail({ piece, bag, onBack, onAdd, onBag }) {
 // ─── BAG ───────────────────────────────────────────────────────
 
 function Bag({ bag, onBack, onRemove, onCheckout, total }) {
-  const bagCount = bag.reduce((s, i) => s + i.qty, 0);
   return (
     <div style={{ minHeight: "100vh", background: palette.ceramic }}>
-      <Nav onBag={() => {}} bagCount={bagCount} onBack={onBack} label="Continue Browsing" />
-      <div style={{ maxWidth: 480, margin: "0 auto", padding: "44px 28px" }}>
+      <div style={{ padding: "16px 20px", borderBottom: `0.5px solid ${palette.ceramicDark}` }}>
+        <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: sans, fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: palette.fog }}>
+          ← Continue Browsing
+        </button>
+      </div>
+      <div style={{ maxWidth: 480, margin: "0 auto", padding: "36px 24px" }}>
         <Fade delay={60}>
-          <p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: palette.imperial, marginBottom: 36 }}>Your Bag</p>
+          <p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: palette.imperial, marginBottom: 32 }}>Your Bag</p>
         </Fade>
         {bag.length === 0 ? (
           <Fade delay={120}>
-            <p style={{ fontFamily: serif, fontSize: 18, fontStyle: "italic", color: palette.fog, textAlign: "center", padding: "64px 0" }}>Nothing here yet.</p>
+            <p style={{ fontFamily: serif, fontSize: 18, fontStyle: "italic", color: palette.fog, textAlign: "center", padding: "56px 0" }}>Nothing here yet.</p>
           </Fade>
         ) : (
           <Fade delay={120}>
             <div>
               {bag.map(item => (
-                <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 16, padding: "22px 0", borderBottom: `0.5px solid ${palette.ceramicDark}` }}>
-                  <div style={{ width: 44, height: 44, borderRadius: "50%", flexShrink: 0, background: `radial-gradient(circle at 40% 35%, ${item.glazeColor}cc, ${item.glazeColor}88)` }} />
+                <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 16, padding: "20px 0", borderBottom: `0.5px solid ${palette.ceramicDark}` }}>
+                  <div style={{ width: 48, height: 48, borderRadius: "50%", flexShrink: 0, background: `radial-gradient(circle at 40% 35%, ${item.glazeColor}cc, ${item.glazeColor}88)` }} />
                   <div style={{ flex: 1 }}>
-                    <h4 style={{ fontFamily: serif, fontSize: 15, fontWeight: 400, color: palette.ink, margin: "0 0 4px" }}>{item.name}</h4>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      <span style={{ fontFamily: sans, fontSize: 9, color: palette.fog, letterSpacing: "0.1em", textTransform: "uppercase" }}>{item.glaze}</span>
-                      <span style={{ fontFamily: sans, fontSize: 9, color: palette.ceramicDark }}>·</span>
-                      <span style={{ fontFamily: sans, fontSize: 9, color: palette.fog }}>Qty {item.qty}</span>
-                    </div>
+                    <h4 style={{ fontFamily: serif, fontSize: 15, fontWeight: 400, color: palette.ink, margin: "0 0 3px" }}>{item.name}</h4>
+                    <p style={{ fontFamily: sans, fontSize: 9, color: palette.fog, margin: 0, letterSpacing: "0.08em", textTransform: "uppercase" }}>{item.glaze} · Qty {item.qty}</p>
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 300, color: palette.text }}>${(item.price * item.qty).toFixed(2)}</span>
@@ -483,11 +453,11 @@ function Bag({ bag, onBack, onRemove, onCheckout, total }) {
                   </div>
                 </div>
               ))}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "28px 0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "26px 0" }}>
                 <span style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: palette.fog }}>Total</span>
                 <span style={{ fontFamily: serif, fontSize: 24, fontWeight: 400, color: palette.ink }}>${total.toFixed(2)}</span>
               </div>
-              <button onClick={onCheckout} style={{ display: "block", width: "100%", background: palette.ink, color: palette.warmWhite, padding: "19px 0", fontFamily: sans, fontSize: 10, letterSpacing: "0.24em", textTransform: "uppercase", border: "none", cursor: "pointer", borderRadius: 0 }}>Checkout</button>
+              <button onClick={onCheckout} style={{ display: "block", width: "100%", background: palette.ink, color: palette.warmWhite, padding: "18px 0", fontFamily: sans, fontSize: 10, letterSpacing: "0.24em", textTransform: "uppercase", border: "none", cursor: "pointer", borderRadius: 0 }}>Checkout</button>
             </div>
           </Fade>
         )}
@@ -500,12 +470,13 @@ function Bag({ bag, onBack, onRemove, onCheckout, total }) {
 
 function Checkout({ bag, total, name, email, addr, city, zip, setName, setEmail, setAddr, setCity, setZip, onBack, onConfirm }) {
   const ready = name && email && addr && city && zip;
-  const bagCount = bag.reduce((s, i) => s + i.qty, 0);
   return (
     <div style={{ minHeight: "100vh", background: palette.ceramic }}>
-      <Nav onBag={() => {}} bagCount={bagCount} onBack={onBack} label="Back to Bag" />
-      <div style={{ maxWidth: 480, margin: "0 auto", padding: "44px 28px 64px" }}>
-        <Fade delay={60}><p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: palette.imperial, marginBottom: 36 }}>Shipping</p></Fade>
+      <div style={{ padding: "16px 20px", borderBottom: `0.5px solid ${palette.ceramicDark}` }}>
+        <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: sans, fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: palette.fog }}>← Back to Bag</button>
+      </div>
+      <div style={{ maxWidth: 480, margin: "0 auto", padding: "36px 24px 56px" }}>
+        <Fade delay={60}><p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: palette.imperial, marginBottom: 32 }}>Shipping</p></Fade>
         <Fade delay={180}>
           <div>
             <Field lbl="Full Name" value={name} onChange={setName} placeholder="Jane Smith" />
@@ -518,18 +489,18 @@ function Checkout({ bag, total, name, email, addr, city, zip, setName, setEmail,
           </div>
         </Fade>
         <Fade delay={300}>
-          <div style={{ borderTop: `0.5px solid ${palette.ceramicDark}`, paddingTop: 28, marginTop: 4 }}>
+          <div style={{ borderTop: `0.5px solid ${palette.ceramicDark}`, paddingTop: 24, marginTop: 4 }}>
             {bag.map(item => (
               <div key={item.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
                 <span style={{ fontFamily: serif, fontSize: 14, color: palette.textQuiet }}>{item.name} × {item.qty}</span>
                 <span style={{ fontFamily: sans, fontSize: 13, fontWeight: 300, color: palette.text }}>${(item.price * item.qty).toFixed(2)}</span>
               </div>
             ))}
-            <div style={{ display: "flex", justifyContent: "space-between", padding: "20px 0 28px", borderTop: `0.5px solid ${palette.ceramicDark}`, marginTop: 16 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", padding: "18px 0 24px", borderTop: `0.5px solid ${palette.ceramicDark}`, marginTop: 14 }}>
               <span style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: palette.fog }}>Total</span>
               <span style={{ fontFamily: serif, fontSize: 24, fontWeight: 400, color: palette.ink }}>${total.toFixed(2)}</span>
             </div>
-            <button onClick={ready ? onConfirm : undefined} style={{ display: "block", width: "100%", background: palette.ink, color: palette.warmWhite, padding: "19px 0", fontFamily: sans, fontSize: 10, letterSpacing: "0.24em", textTransform: "uppercase", border: "none", cursor: ready ? "pointer" : "default", borderRadius: 0, opacity: ready ? 1 : 0.28, transition: "opacity 500ms ease" }}>Place Order</button>
+            <button onClick={ready ? onConfirm : undefined} style={{ display: "block", width: "100%", background: palette.ink, color: palette.warmWhite, padding: "18px 0", fontFamily: sans, fontSize: 10, letterSpacing: "0.24em", textTransform: "uppercase", border: "none", cursor: ready ? "pointer" : "default", borderRadius: 0, opacity: ready ? 1 : 0.28, transition: "opacity 500ms ease" }}>Place Order</button>
           </div>
         </Fade>
       </div>
@@ -543,19 +514,19 @@ function Confirmed({ name, email, total, onDone }) {
   const firstName = name.split(" ")[0] || "you";
   return (
     <div style={{ minHeight: "100vh", background: palette.ceramic, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ textAlign: "center", padding: "64px 32px", maxWidth: 380 }}>
-        <Fade delay={200}><div style={{ width: 24, borderBottom: `0.5px solid ${palette.imperial}`, margin: "0 auto 40px" }} /></Fade>
-        <Fade delay={420}><p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", color: palette.celadonMute, marginBottom: 20 }}>Order Placed</p></Fade>
-        <Fade delay={620}><h2 style={{ fontFamily: serif, fontSize: 30, fontWeight: 400, color: palette.ink, margin: "0 0 22px" }}>Thank you, {firstName}.</h2></Fade>
-        <Fade delay={820}>
+      <div style={{ textAlign: "center", padding: "56px 32px", maxWidth: 380 }}>
+        <Fade delay={200}><div style={{ width: 24, borderBottom: `0.5px solid ${palette.imperial}`, margin: "0 auto 36px" }} /></Fade>
+        <Fade delay={400}><p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", color: palette.celadonMute, marginBottom: 18 }}>Order Placed</p></Fade>
+        <Fade delay={600}><h2 style={{ fontFamily: serif, fontSize: 30, fontWeight: 400, color: palette.ink, margin: "0 0 20px" }}>Thank you, {firstName}.</h2></Fade>
+        <Fade delay={800}>
           <p style={{ fontFamily: serif, fontSize: 16, fontStyle: "italic", color: palette.textQuiet, lineHeight: 1.85, margin: "0 0 10px" }}>Your pieces will arrive wrapped in linen, with a note from Chef Brandon Jew.</p>
-          <p style={{ fontFamily: sans, fontSize: 11, color: palette.fog, margin: "0 0 28px" }}>Confirmation sent to {email}</p>
+          <p style={{ fontFamily: sans, fontSize: 11, fontWeight: 300, color: palette.fog, margin: "0 0 28px" }}>Confirmation sent to {email}</p>
         </Fade>
-        <Fade delay={1020}><p style={{ fontFamily: serif, fontSize: 22, fontWeight: 400, color: palette.ink, margin: "0 0 40px" }}>${total.toFixed(2)}</p></Fade>
-        <Fade delay={1220}>
-          <div style={{ width: 16, borderBottom: `0.5px solid ${palette.imperial}`, margin: "0 auto 22px" }} />
-          <p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.15em", color: palette.fog, marginBottom: 36 }}>Mister Jiu's earns a share of this purchase</p>
-          <button onClick={onDone} style={{ background: palette.ink, color: palette.warmWhite, border: "none", padding: "16px 52px", fontFamily: sans, fontSize: 10, letterSpacing: "0.24em", textTransform: "uppercase", cursor: "pointer", borderRadius: 0 }}>Done</button>
+        <Fade delay={1000}><p style={{ fontFamily: serif, fontSize: 22, fontWeight: 400, color: palette.ink, margin: "0 0 36px" }}>${total.toFixed(2)}</p></Fade>
+        <Fade delay={1200}>
+          <div style={{ width: 16, borderBottom: `0.5px solid ${palette.imperial}`, margin: "0 auto 20px" }} />
+          <p style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.15em", color: palette.fog, marginBottom: 32 }}>Mister Jiu's earns a share of this purchase</p>
+          <button onClick={onDone} style={{ background: palette.ink, color: palette.warmWhite, border: "none", padding: "15px 48px", fontFamily: sans, fontSize: 10, letterSpacing: "0.24em", textTransform: "uppercase", cursor: "pointer", borderRadius: 0 }}>Done</button>
         </Fade>
       </div>
     </div>
