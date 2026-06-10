@@ -349,8 +349,8 @@ function StoryTile({ piece, onSelect }) {
             width: "96%", height: "96%",
             objectFit: "contain",
             mixBlendMode: "multiply",
-            WebkitMaskImage: "radial-gradient(ellipse 82% 80% at 50% 50%, black 42%, transparent 100%)",
-            maskImage: "radial-gradient(ellipse 82% 80% at 50% 50%, black 42%, transparent 100%)",
+            WebkitMaskImage: "radial-gradient(ellipse 90% 88% at 50% 50%, black 28%, transparent 100%)",
+            maskImage: "radial-gradient(ellipse 90% 88% at 50% 50%, black 28%, transparent 100%)",
             transition: "transform 1400ms cubic-bezier(0.16, 1, 0.3, 1), opacity 600ms ease",
             transform: hover ? "scale(1.04)" : "scale(1)",
             opacity: hover ? 0.88 : 1,
@@ -424,7 +424,7 @@ function Detail({ piece, bag, onBack, onAdd, onBag }) {
       {/* Hero image — full width, floats on cream */}
       <Fade delay={60} duration={700}>
         <div style={{ padding: "32px 24px 0" }}>
-          <div style={{ position: "relative", overflow: "hidden", aspectRatio: "4 / 3" }}>
+          <div style={{ position: "relative", overflow: "hidden", aspectRatio: "1 / 1" }}>
             <img
               src={piece.image}
               alt={piece.name}
@@ -434,6 +434,8 @@ function Detail({ piece, bag, onBack, onAdd, onBag }) {
                 width: "92%", height: "92%",
                 objectFit: "contain",
                 mixBlendMode: "multiply",
+                WebkitMaskImage: "radial-gradient(ellipse 88% 85% at 50% 50%, black 32%, transparent 100%)",
+                maskImage: "radial-gradient(ellipse 88% 85% at 50% 50%, black 32%, transparent 100%)",
               }}
             />
           </div>
