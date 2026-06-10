@@ -421,24 +421,20 @@ function Detail({ piece, bag, onBack, onAdd, onBag }) {
         </button>
       </div>
 
-      {/* Hero image — full width, floats on cream */}
+      {/* Hero image — floats on cream, no box */}
       <Fade delay={60} duration={700}>
-        <div style={{ padding: "32px 24px 0" }}>
-          <div style={{ position: "relative", overflow: "hidden", aspectRatio: "1 / 1" }}>
-            <img
-              src={piece.image}
-              alt={piece.name}
-              style={{
-                position: "absolute",
-                top: "4%", left: "4%",
-                width: "92%", height: "92%",
-                objectFit: "contain",
-                mixBlendMode: "multiply",
-                WebkitMaskImage: "radial-gradient(ellipse 88% 85% at 50% 50%, black 32%, transparent 100%)",
-                maskImage: "radial-gradient(ellipse 88% 85% at 50% 50%, black 32%, transparent 100%)",
-              }}
-            />
-          </div>
+        <div style={{ padding: "40px 40px 0" }}>
+          <img
+            src={piece.image}
+            alt={piece.name}
+            style={{
+              display: "block",
+              width: "100%",
+              maxHeight: 260,
+              objectFit: "contain",
+              mixBlendMode: "multiply",
+            }}
+          />
         </div>
       </Fade>
 
