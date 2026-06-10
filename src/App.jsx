@@ -345,10 +345,12 @@ function StoryTile({ piece, onSelect }) {
           alt={piece.name}
           style={{
             position: "absolute",
-            top: "4%", left: "4%",
-            width: "92%", height: "92%",
+            top: "2%", left: "2%",
+            width: "96%", height: "96%",
             objectFit: "contain",
             mixBlendMode: "multiply",
+            WebkitMaskImage: "radial-gradient(ellipse 82% 80% at 50% 50%, black 42%, transparent 100%)",
+            maskImage: "radial-gradient(ellipse 82% 80% at 50% 50%, black 42%, transparent 100%)",
             transition: "transform 1400ms cubic-bezier(0.16, 1, 0.3, 1), opacity 600ms ease",
             transform: hover ? "scale(1.04)" : "scale(1)",
             opacity: hover ? 0.88 : 1,
@@ -381,15 +383,10 @@ function StoryTile({ piece, onSelect }) {
         {piece.card}
       </p>
 
-      {/* Glaze + Price — inline, secondary */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontFamily: sans, fontSize: 8, color: palette.fog, letterSpacing: "0.14em", textTransform: "uppercase" }}>
-          {piece.glaze}
-        </span>
-        <span style={{ fontFamily: serif, fontSize: 14, color: palette.ink }}>
-          ${piece.price}
-        </span>
-      </div>
+      {/* Glaze — secondary, no price on front */}
+      <span style={{ fontFamily: sans, fontSize: 8, color: palette.fog, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+        {piece.glaze}
+      </span>
     </div>
   );
 }
